@@ -38,29 +38,45 @@ slack = Slack::Web::Client.new
 token = refresh_token
 
 begin
-  uri = URI.parse(ENDPOINT + NEWORK_WORKSPACE + '/rooms')
-  http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = true
+  count = 0
+  ts    = 0
 
-  headers = {'authorization' => "Bearer #{token}"}
-  response = http.get(uri.path, headers)
+  loop do
+    uri = URI.parse(ENDPOINT + NEWORK_WORKSPACE + '/rooms')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
 
-  raise Net:HTTPError if response.code == '401'
-  rooms = JSON.parse(response.body)
+    headers = {'authorization' => "Bearer #{token}"}
+    response = http.get(uri.path, headers)
 
-  message = ''
-  rooms.each do |room|
-    next if room['members'].empty?
-    message += "#{room['name']}: #{room['members'].size} 人\n"
+    raise Net:HTTPError if response.code == '401'
+    rooms = JSON.parse(response.body)
+
+    message = ''
+    rooms.each do |room|
+      next if room['members'].empty?
+      message += "#{room['name']}: #{room['members'].size} 人\n"
+    end
+
+    if message == ''
+      message = 'NeWorkのRoomには誰もいないよ〜'
+    else
+      message =  "NeWorkの現在の状況\n" + message
+    end
+
+    case count
+    when 1..29
+      slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
+    else
+      result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
+      ts = result['ts']
+      p ts
+    end
+
+    count = (count + 1) % 30
+    puts count
+    sleep 60
   end
-
-  if message == ''
-    message = 'NeWorkのRoomには誰もいないよ〜'
-  else
-    message =  "NeWorkの現在の状況\n" + message
-  end
-  puts message
-  slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
 rescue Net::HTTPError
   token = refresh_token
   retry
