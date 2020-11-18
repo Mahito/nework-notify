@@ -70,7 +70,6 @@ begin
     else
       result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
       ts = result['ts']
-      p ts
     end
 
     count = (count + 1) % 30
