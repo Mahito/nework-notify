@@ -49,7 +49,7 @@ begin
     headers = {'authorization' => "Bearer #{token}"}
     response = http.get(uri.path, headers)
 
-    raise Net:HTTPError if response.code == '401'
+    raise Net::HTTPError if response.code == '401'
     rooms = JSON.parse(response.body)
 
     message = ''
