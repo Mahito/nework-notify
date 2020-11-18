@@ -55,7 +55,9 @@ begin
     message = ''
     rooms.each do |room|
       next if room['members'].empty?
-      message += "#{room['name']}: #{room['members'].size} 人\n"
+      message += "#{room['name']}: #{room['members'].size} 人"
+      message += "（+ #{room['listeners'].size} 人）" if room['listeners'].size != 0
+      message += "\n"
     end
 
     if message == ''
