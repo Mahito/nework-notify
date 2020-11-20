@@ -25,8 +25,8 @@ def refresh_token
 end
 
 Slack::Web::Client.configure do |config|
-  config.token = ENV['SLACK_USER_API_TOKEN']
-  raise 'Missing ENV[SLACK_USER_API_TOKEN]!' unless config.token
+  config.token = ENV['SLACK_API_TOKEN']
+  raise 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
 
   STDOUT.sync = true
 
@@ -49,7 +49,7 @@ begin
     headers = {'authorization' => "Bearer #{token}"}
     response = http.get(uri.path, headers)
 
-    raise Net::HTTPError if response.code == '401'
+    raise Net::HTTPError.new("Tokenの認証切れ", 401) if response.code == '401'
     rooms = JSON.parse(response.body)
 
     message = ''
@@ -78,7 +78,7 @@ begin
     puts count
     sleep 60
   end
-rescue Net::HTTPError
+rescue Net::HTTPError => e
   token = refresh_token
   retry
 end
