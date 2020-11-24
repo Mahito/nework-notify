@@ -2,6 +2,7 @@ require 'slack-ruby-client'
 require "net/http"
 require 'json'
 require 'uri'
+require 'time'
 
 ENDPOINT          = 'https://api.nework.app/v1/workspaces/'
 TOKEN_REFRESH_URL = 'https://securetoken.googleapis.com/v1/token?key='
@@ -36,11 +37,9 @@ end
 
 slack = Slack::Web::Client.new
 token = refresh_token
+ts    = 0
 
 begin
-  count = 0
-  ts    = 0
-
   loop do
     uri = URI.parse(ENDPOINT + NEWORK_WORKSPACE + '/rooms')
     http = Net::HTTP.new(uri.host, uri.port)
@@ -62,20 +61,23 @@ begin
 
     if message == ''
       message = 'NeWorkのRoomには誰もいないよ〜'
+      if ts == 0
+        result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
+        ts = result['ts']
+      else
+        slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
+      end
     else
       message =  "NeWorkの現在の状況\n" + message
+      durartion = (Time.now - ts.to_i).to_i
+      if durartion > 1800
+        result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
+        ts = result['ts']
+      else
+        slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
+      end
     end
 
-    case count
-    when 1..29
-      slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
-    else
-      result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
-      ts = result['ts']
-    end
-
-    count = (count + 1) % 30
-    puts count
     sleep 60
   end
 rescue Net::HTTPError => e
