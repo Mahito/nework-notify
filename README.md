@@ -17,6 +17,26 @@ NeWorkの状況を可視化して雑談をよりしやすくするためのツ�
 ## Usage
 
 ```
+$ vim .env
+```
+
+```.env
+NEWORK_WORKSPACE=nttcom
+TOKEN_API_KEY=...
+REFRESH_TOKEN=...
+SLACK_CHANNEL="#remote"
+SLACK_API_TOKEN=...
+```
+
+```
+$ docker-compose up
+```
+
+## Develop
+
+For local test & debug.
+
+```
 $ export NEWORK_WORKSPACE=nttcom
 $ export TOKEN_API_KEY=...
 $ export REFRESH_TOKEN=...
