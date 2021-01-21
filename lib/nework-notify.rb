@@ -66,7 +66,7 @@ begin
 
     if message == ''
       message = 'NeWorkのRoomには誰もいないよ〜'
-      if ts.zero?
+      if ts.to_i.zero?
         result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
         ts = result['ts']
       else
