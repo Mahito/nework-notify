@@ -39,16 +39,16 @@ Slack::Web::Client.configure do |config|
 end
 
 slack = Slack::Web::Client.new
-token = refresh_token
 ts    = 0
+uri   = URI.parse("#{ENDPOINT}#{NEWORK_WORKSPACE}/rooms")
 
 begin
-  loop do
-    uri = URI.parse("#{ENDPOINT}#{NEWORK_WORKSPACE}/rooms")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  token = refresh_token
+  headers = { 'authorization' => "Bearer #{token}" }
 
-    headers = { 'authorization' => "Bearer #{token}" }
+  loop do
     response = http.get(uri.path, headers)
 
     raise Net::HTTPError.new('Tokenの認証切れ', 401) if response.code == '401'
@@ -64,29 +64,23 @@ begin
       message += "\n"
     end
 
-    if message == ''
-      message = 'NeWorkのRoomには誰もいないよ〜'
-      if ts.to_i.zero?
-        result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
-        ts = result['ts']
-      else
-        slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
-      end
+    message = if message == ''
+                'NeWorkのRoomには誰もいないよ〜'
+              else
+                "NeWorkの現在の状況\n#{message}"
+              end
+    durartion = (Time.now - ts.to_i).to_i
+    if durartion > UPDATE_MINUTES * 60
+      result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
+      ts = result['ts']
     else
-      message = "NeWorkの現在の状況\n#{message}"
-      durartion = (Time.now - ts.to_i).to_i
-      if durartion > UPDATE_MINUTES * 60
-        result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
-        ts = result['ts']
-      else
-        slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
-      end
+      slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
     end
 
     sleep 60
   end
 rescue Net::HTTPError => e
   puts e
-  token = refresh_token
+  http.finish
   retry
 end
