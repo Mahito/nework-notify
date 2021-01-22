@@ -31,4 +31,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: mahito/nework-notify:${{ steps.tags.outputs.version }}
+          tags: mahito/nework-notify:${{ steps.tag.outputs.version }}
