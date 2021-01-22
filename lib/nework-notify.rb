@@ -80,7 +80,8 @@ begin
     sleep 60
   end
 rescue Net::HTTPError => e
-  puts e
-  http.finish
+  p e
   retry
+else => err
+  p err
 end
