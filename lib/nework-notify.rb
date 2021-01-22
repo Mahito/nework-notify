@@ -82,6 +82,6 @@ begin
 rescue Net::HTTPError => e
   p e
   retry
-else => err
+rescue => err
   p err
 end
