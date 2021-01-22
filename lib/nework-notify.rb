@@ -83,7 +83,7 @@ begin
 rescue Net::HTTPError => e
   p e
   retry
-rescue SlackError => e
+rescue Slack::Web::Api::Errors::SlackError => e
   p e
   sleep 300
   retry
