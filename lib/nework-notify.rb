@@ -64,16 +64,17 @@ begin
       message += "\n"
     end
 
-    message = if message == ''
-                'NeWorkのRoomには誰もいないよ〜'
-              else
-                "NeWorkの現在の状況\n#{message}"
-              end
     durartion = (Time.now - ts.to_i).to_i
-    if durartion > UPDATE_MINUTES * 60
+    if durartion > UPDATE_MINUTES * 60 && message != ''
+      message = "NeWorkの現在の状況\n#{message}"
       result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: message)
       ts = result['ts']
     else
+      message = if message == ''
+                  'NeWorkのRoomには誰もいないよ〜'
+                else
+                  "NeWorkの現在の状況\n#{message}"
+                end
       slack.chat_update(channel: SLACK_CHANNEL, text: message, ts: ts)
     end
 
@@ -82,7 +83,8 @@ begin
 rescue Net::HTTPError => e
   p e
   retry
-rescue => err
-  p err
+rescue SlackError => e
+  p e
+  sleep 300
   retry
 end
