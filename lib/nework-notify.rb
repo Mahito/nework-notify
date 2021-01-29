@@ -73,6 +73,7 @@ begin
     if ts.to_i.zero? && message == ''
       # Pass
     elsif durartion > UPDATE_MINUTES * 60 && message != ''
+      slack.chat_delete(channel: SLACK_CHANNEL, ts: ts) unless ts.to_i.zero?
       result = slack.chat_postMessage(channel: SLACK_CHANNEL, text: msg)
       ts = result['ts']
     else
