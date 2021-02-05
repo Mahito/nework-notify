@@ -64,11 +64,9 @@ begin
       message += "\n"
     end
 
-    msg = if message == ''
-            'NeWorkのRoomには誰もいないよ〜'
-          else
-            "NeWorkの現在の状況\n#{message}"
-          end
+    msg = "NeWork(<#{ENDPOINT}#{NEWORK_WORKSPACE}|#{NEWORK_WORKSPACE}>)の"
+    msg += message == '' ? 'Roomには誰もいないよ〜' : "現在の状況\n#{message}"
+
     durartion = (Time.now - ts.to_i).to_i
     if ts.to_i.zero? && message == ''
       # Pass
