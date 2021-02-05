@@ -6,7 +6,8 @@ require 'json'
 require 'uri'
 require 'time'
 
-ENDPOINT          = 'https://api.nework.app/v1/workspaces/'
+ENDPOINT          = 'https://nework.app/workspaces/'
+API_ENDPOINT      = 'https://api.nework.app/v1/workspaces/'
 TOKEN_REFRESH_URL = 'https://securetoken.googleapis.com/v1/token?key='
 
 NEWORK_WORKSPACE  = ENV['NEWORK_WORKSPACE']
@@ -40,7 +41,7 @@ end
 
 slack = Slack::Web::Client.new
 ts    = 0
-uri   = URI.parse("#{ENDPOINT}#{NEWORK_WORKSPACE}/rooms")
+uri   = URI.parse("#{API_ENDPOINT}#{NEWORK_WORKSPACE}/rooms")
 
 begin
   http = Net::HTTP.new(uri.host, uri.port)
@@ -64,7 +65,7 @@ begin
       message += "\n"
     end
 
-    msg = "NeWork(<#{ENDPOINT}#{NEWORK_WORKSPACE}|#{NEWORK_WORKSPACE}>)の"
+    msg = "NeWork (<#{ENDPOINT}#{NEWORK_WORKSPACE}|#{NEWORK_WORKSPACE}>) の"
     msg += message == '' ? 'Roomには誰もいないよ〜' : "現在の状況\n#{message}"
 
     durartion = (Time.now - ts.to_i).to_i
