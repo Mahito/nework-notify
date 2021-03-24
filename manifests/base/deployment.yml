@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nework-notify 
+  labels:
+    app: nework-notify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nework-notify
+  template:
+    metadata:
+      labels:
+        app: nework-notify
+    spec:
+      containers:
+      - name: nework-notify
+        image: mahito/nework-notify:v1.0.7
+        env:
+          - name: NEWORK_WORKSPACE
+            valueFrom:
+              secretKeyRef:
+                name: secret-env
+                key: NEWORK_WORKSPACE
+          - name: TOKEN_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret-env
+                key: TOKEN_API_KEY
+          - name: REFRESH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: secret-env
+                key: REFRESH_TOKEN
+          - name: SLACK_CHANNEL
+            valueFrom:
+              secretKeyRef:
+                name: secret-env
+                key: SLACK_CHANNEL
+          - name: SLACK_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: secret-env
+                key: SLACK_API_TOKEN
