@@ -15,6 +15,7 @@ TOKEN_API_KEY     = ENV['TOKEN_API_KEY']
 REFRESH_TOKEN     = ENV['REFRESH_TOKEN']
 SLACK_CHANNEL     = ENV['SLACK_CHANNEL']
 UPDATE_MINUTES    = ENV['UPDATE_MINUTES'] || 60
+WORKSPACE_URL     = ENDPOINT + NEWORK_WORKSPACE
 
 def refresh_token
   uri = URI.parse(TOKEN_REFRESH_URL + TOKEN_API_KEY)
@@ -60,12 +61,13 @@ begin
     rooms.each do |room|
       next if room['members'].empty?
 
-      message += "#{room['name']}: #{room['members'].size} 人"
+      message += "#{room['name']} (<#{WORKSPACE_URL}?room=#{room['roomId']}#|Join>): "
+      message += "#{room['members'].size} 人"
       message += "（+ #{room['listeners'].size} 人）" unless room['listeners'].empty?
       message += "\n"
     end
 
-    msg = "NeWork (<#{ENDPOINT}#{NEWORK_WORKSPACE}|#{NEWORK_WORKSPACE}>) の"
+    msg = "NeWork (<#{WORKSPACE_URL}|#{NEWORK_WORKSPACE}>) の"
     msg += message == '' ? 'Roomには誰もいないよ〜' : "現在の状況\n#{message}"
 
     durartion = (Time.now - ts.to_i).to_i
