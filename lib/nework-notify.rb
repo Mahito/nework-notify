@@ -88,6 +88,10 @@ rescue Net::HTTPError => e
   retry
 rescue Slack::Web::Api::Errors::SlackError => e
   p e
+  puts e.backtrace
   sleep 300
   retry
+rescue => e
+  p e
+  puts e.backtrace
 end
