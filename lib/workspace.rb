@@ -19,6 +19,8 @@ module NeWorkNotify
     def room_update(body)
       case body['p']
       when %r{^workspaces/.+/rooms$}
+        return if body['d'].nil?
+
         @rooms = {}
         body['d'].each do |k, v|
           @rooms[k] = Room.new(k, v, @name)
