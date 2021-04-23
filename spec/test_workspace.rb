@@ -1,26 +1,26 @@
 require 'minitest'
 require 'minitest/autorun'
+require './lib/config'
 require './lib/workspace'
 
 class TestWorkspace < MiniTest::Test
   def setup
-    slack = { 'token' => 'test', 'channel' => 'test'}
-    @workspace = NeWorkNotify::Workspace.new('test', slack)
+    @config = NeWorkNotify::Config.new
+    @workspace = NeWorkNotify::Workspace.new(@config)
   end
 
   def test_rooms
   end
 
   def test_message_shows_absent
-    expect = 'NeWork (<https://nework.app/workspace/test|test>) のRoomには誰もいないよ〜'
+    expect = ''
     assert_equal expect, @workspace.message
   end
 
   def test_message_show_rooms
     data = {'name' => 'test', 'userIds' => {a: 1, b: 2}, 'audienceIds' => {a: 1}}
-    @workspace.rooms = { 'workspace_id' => NeWorkNotify::Room.new('workspace_id', data, @workspace.name) }
-    expect = "NeWork (<https://nework.app/workspace/test|test>) の現在の状況\n"
-    expect += "test (<https://nework.app/workspace/test#workspace_id#|Join>): 2 人（+ 1 人）\n"
+    @workspace.rooms = { 'test_room_id' => NeWorkNotify::Room.new('test_room_id', data, @workspace.name) }
+    expect = "test (<https://nework.app/workspace/#{@config.workspace_name}#test_room_id#|Join>): 2 人（+ 1 人）\n"
     assert_equal expect, @workspace.message
   end
 end

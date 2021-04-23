@@ -41,7 +41,14 @@ module NeWorkNotify
     end
 
     def post_slack
-      @slack_client.post(message)
+      msg = "NeWork (<#{ENDPOINT}#{@name}|#{@name}>) の"
+      if (m = message) == ''
+        msg += "Roomには誰もいないよ〜"
+        @slack_client.post_nobody(msg)
+      else
+        msg += "現在の状況\n#{m}"
+        @slack_client.post(msg)
+      end
     end
 
     def message
@@ -50,10 +57,7 @@ module NeWorkNotify
         m = room.to_s
         message += "#{m}\n" if m != ''
       end
-
-      msg = "NeWork (<#{ENDPOINT}#{@name}|#{@name}>) の"
-      msg += message == '' ? 'Roomには誰もいないよ〜' : "現在の状況\n#{message}"
-      msg
+      message
     end
   end
 end
