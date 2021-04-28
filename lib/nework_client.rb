@@ -8,12 +8,13 @@ require 'uri'
 
 module NeWorkNotify
   module NeWorkClient
-    WS_ENDPOINT = 'wss://s-usc1c-nss-378.firebaseio.com/.ws?v=5&ns=sys3468091-9-45922838-default-rtdb'
+    FIREBASE_DB_URL = ENV['FIREBASE_DB_URL']
+    WS_ENDPOINT = "wss://#{FIREBASE_DB_URL}.firebaseio.com/.ws?v=5&ns=sys3468091-9-45922838-default-rtdb"
     TOKEN_REFRESH_URL = 'https://securetoken.googleapis.com/v1/token?key='
 
     # @return [String] Auth Query with token
     def self.auth_query
-      credential = credential = { 'cred': refresh_token }
+      credential = { 'cred': refresh_token }
       data = { 't' => 'd' }
       data['d'] = { 'r' => 1, 'a' => 'auth', 'b' => credential }
       JSON.dump(data)
