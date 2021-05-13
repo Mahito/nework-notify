@@ -22,7 +22,7 @@ module NeWorkNotify
     def to_s
       message = ''
       unless @speakers.zero? && @audiences.zero?
-        message = "#{@name} (<#{WORKSPACE_URL}#{@workspace}\##{@id}#|Join>): "
+        message = "#{@name} (<#{WORKSPACE_URL}#{@workspace}\##{@id}|Join>): "
         message += "#{@speakers} 人"
         message += "（+ #{@audiences} 人）" unless @audiences.zero?
       end
