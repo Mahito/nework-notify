@@ -16,8 +16,10 @@ module NeWorkNotify
 
 
   def self.start_auth
-    @ws.send(NeWorkClient.auth_query)
-    @ws.send(JSON.dump({"t":"d","d":{"r":2,"a":"q","b":{"p":"/workspaces/#{@workspace.name}/rooms","h":""}}}))
+    @timer = EM::Timer.new(3500) do
+      @ws.send(NeWorkClient.auth_query)
+      @ws.send(JSON.dump({"t":"d","d":{"r":2,"a":"q","b":{"p":"/workspaces/#{@workspace.name}/rooms","h":""}}}))
+    end
   end
 
   def self.run
@@ -52,12 +54,15 @@ module NeWorkNotify
         rescue => e
           p e
           puts e.backtrace
+
+          @timer.cancel
           start_auth
         end
       end
 
       @ws.on :close do |event|
         p [:close, event.code, event.reason]
+        @timer.cancel
         @ws = nil
         exit
       end
