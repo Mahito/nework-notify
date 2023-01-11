@@ -21,7 +21,7 @@ module NeWorkNotify
   end
 
   def self.reauth_timer
-    @timer = EM::Timer.new(3500) do
+    @timer = EM::PeriodicTimer.new(3500) do
       start_auth
     end
   end
