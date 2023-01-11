@@ -40,7 +40,6 @@ module NeWorkNotify
 
             if body['s'] == 'expired_token'
               start_auth
-              next
             end
 
             if body['p']
@@ -53,6 +52,7 @@ module NeWorkNotify
         rescue => e
           p e
           puts e.backtrace
+          start_auth
         end
       end
 
