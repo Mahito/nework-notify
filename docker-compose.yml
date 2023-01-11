@@ -1,6 +1,8 @@
 version: '3.3'
 services:
   nework-notify:
+    build:
+      context: .
     image: mahito/nework-notify:test
     env_file:
       - .env
