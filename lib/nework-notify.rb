@@ -40,7 +40,8 @@ module NeWorkNotify
           when 'd'
             body = data['d']['b']
 
-            if body['s'] == 'expired_token'
+            if body['s'] =~ /expired_token/
+              puts 'Return expired token !'
               start_auth
             end
 
