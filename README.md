@@ -6,8 +6,9 @@ NeWorkの状況を可視化して雑談をよりしやすくするためのツ�
 
 ## Parameters
 
-`TOKEN_API_KEY` と `REFRESH_TOKEN` はGoogle ChromeのDevToolなどを利用して取得してください。
+`FIREBASE_DB_URL` と `TOKEN_API_KEY`、`REFRESH_TOKEN` はGoogle ChromeのDevToolなどを利用して取得してください。
 
+- FIREBASE_DB_URL: NeWork が利用している Firebase DB の URL 
 - NEWORK_WORKSPACE: NeWorkのワークスペース名（例: `nttcom` ）
 - TOKEN_API_KEY: `https://securetoken.googleapis.com/v1/token?key=...` の `key=...` の部分
 - REFRESH_TOKEN: `https://securetoken.googleapis.com/v1/token?key=...` のレスポンスボディ参照
