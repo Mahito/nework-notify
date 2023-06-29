@@ -5,7 +5,8 @@ require 'json'
 module NeWorkNotify
   class Room
     attr_reader :id, :workspace
-    attr_writer :name, :speakers, :audiences
+    attr_writer :name
+    attr_accessor :speakers, :audiences
 
     WORKSPACE_URL = 'https://nework.app/workspace/'
 
@@ -23,6 +24,7 @@ module NeWorkNotify
       @audiences = count_ids(data['audienceIds'])
     end
 
+    # null なら 0, それ以外は数字を返す
     def count_ids(data)
       data.nil? ? 0 : data.to_i
     end

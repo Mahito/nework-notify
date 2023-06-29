@@ -50,11 +50,9 @@ module NeWorkNotify
               start_auth
             end
 
-            if body['p']
-              if body['p'] =~ %r{^workspaces/(.+)/rooms.*$}
-                @workspace.room_update(body)
-                @workspace.post_slack
-              end
+            if body['p'] =~ %r{^workspaces/(.+)/rooms.*$}
+              @workspace.room_update(body)
+              @workspace.post_slack
             end
           end
         rescue => e
