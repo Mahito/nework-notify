@@ -25,10 +25,18 @@ module NeWorkNotify
         body['d'].each do |k, v|
           @rooms[k] = Room.new(k, v, @name)
         end
-      when %r{^workspaces/.+/rooms/([-0-9a-f]+)/userIds/.+$}
-        @rooms[$1].speakers += 1 unless body['d'].nil?
-      when %r{^workspaces/.+/rooms/([-0-9a-f]+)/audienceIds/.+$}
-        @rooms[$1].audiences += 1 unless body['d'].nil?
+      when %r{^workspaces/.+/rooms/([-0-9a-f]+)/userIds/\w+$}
+        if body['d'].nil?
+          @rooms[$1].speakers -= 1 if @rooms[$1].speakers.positive?
+        else
+          @rooms[$1].speakers += 1
+        end
+      when %r{^workspaces/.+/rooms/([-0-9a-f]+)/audienceIds/\w+$}
+        if body['d'].nil?
+          @rooms[$1].audiences -= 1 if @rooms[$1].audiences.positive?
+        else
+          @rooms[$1].audiences += 1
+        end
       when %r{^workspaces/.+/rooms/([-0-9a-f]+)$}
         @rooms[$1].update(body['d'])
       end
