@@ -14,8 +14,8 @@ module NeWorkNotify
       @id = id
       @workspace = workspace
       @name = data['name']
-      @speakers = 0
-      @audiences = 0
+      @speakers = count_ids(data['userIds'])
+      @audiences = count_ids(data['audienceIds'])
     end
 
     # speakers と audiences を更新する関数
