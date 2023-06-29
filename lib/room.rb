@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 module NeWorkNotify
@@ -11,12 +13,18 @@ module NeWorkNotify
       @id = id
       @workspace = workspace
       @name = data['name']
+      @speakers = 0
+      @audiences = 0
+    end
+
+    # speakers と audiences を更新する関数
+    def update(data)
       @speakers = count_ids(data['userIds'])
       @audiences = count_ids(data['audienceIds'])
     end
 
     def count_ids(data)
-      data.instance_of?(String) ? 0 : data.size
+      data.nil? ? 0 : data.to_i
     end
 
     def to_s

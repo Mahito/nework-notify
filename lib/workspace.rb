@@ -25,18 +25,12 @@ module NeWorkNotify
         body['d'].each do |k, v|
           @rooms[k] = Room.new(k, v, @name)
         end
-      when %r{^workspaces/.+/rooms/(.+)/userIds$}
-        @rooms[$1].speakers = body['d'].size
-      when %r{^workspaces/.+/rooms/(.+)/audienceIds$}
-        @rooms[$1].audiences = body['d'].size
-      when %r{^workspaces/.+/rooms/.+/(user|audience)Ids/.+$}
-        # skip
-      when %r{^workspaces/.+/rooms/(.+)$}
-        if body['d']['name'] == ''
-          @rooms.delete($1)
-        else
-          @rooms[$1].name = body['d']['name']
-        end
+      when %r{^workspaces/.+/rooms/(.+)/userIds/%w+$}
+        @rooms[$1].speakers += 1 unless body['d'].nil?
+      when %r{^workspaces/.+/rooms/(.+)/audienceIds/%w+$}
+        @rooms[$1].audiences += 1 unless body['d'].nil?
+      when %r{^workspaces/.+/rooms/([-0-9a-f]+)$}
+        @rooms[$1].update(body['d'])
       end
     end
 
