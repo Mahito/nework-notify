@@ -26,7 +26,14 @@ module NeWorkNotify
 
     # null なら 0, それ以外は数字を返す
     def count_ids(data)
-      data.nil? ? 0 : data.to_i
+      case data
+      when nil
+        0
+      when Hash || Array
+        data.size
+      when String || Integer
+        data.to_i
+      end
     end
 
     def to_s
